@@ -1,0 +1,11 @@
+{
+  "name": "Privora - Confidential Prediction Infrastructure",
+  "short_name": "Privora",
+  "description": "Encrypted prediction infrastructure powered by Fully Homomorphic Encryption",
+  "start_url": "/",
+  "display": "standalone",
+  "background_color": "#000000",
+  "theme_color": "#3B82F6",
+  "icons": [
+  ]
+}

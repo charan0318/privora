@@ -1,0 +1,89 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+@layer base {
+  :root {
+    /* Privora Design System - Institutional Intelligence */
+    --color-bg-primary: #020813;
+    --color-bg-secondary: #0A1424;
+    --color-bg-tertiary: #0F1E32;
+
+    --color-border-primary: #1A2F45;
+    --color-border-secondary: #233F59;
+
+    --color-text-primary: #F0F8FF;
+    --color-text-secondary: #94A3B8;
+    --color-text-tertiary: #64748B;
+
+    --color-accent-blue: #5ce1e6;
+    --color-accent-blue-hover: #06b6d4;
+
+    --color-success: #10B981;
+    --color-danger: #EF4444;
+  }
+
+  html {
+    @apply bg-[#020813] text-[#F0F8FF];
+    font-family: 'Geist', 'Inter', system-ui, -apple-system, sans-serif;
+    font-feature-settings: 'cv02', 'cv03', 'cv04', 'cv11';
+    scroll-behavior: smooth;
+  }
+  
+  body {
+    @apply bg-[#020813] text-[#F0F8FF] antialiased;
+    font-feature-settings: 'rlig' 1, 'calt' 1;
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
+    text-rendering: optimizeLegibility;
+  }
+
+  *:focus {
+    @apply outline-none ring-1 ring-[#5ce1e6] ring-offset-1 ring-offset-[#020813];
+  }
+  
+  ::selection {
+    @apply bg-[#5ce1e6] text-[#020813];
+  }
+  
+  ::-webkit-scrollbar {
+    width: 6px;
+    height: 6px;
+  }
+
+  ::-webkit-scrollbar-track {
+    @apply bg-[#020813];
+  }
+
+  ::-webkit-scrollbar-thumb {
+    @apply bg-[#1A2F45] rounded-sm;
+  }
+
+  ::-webkit-scrollbar-thumb:hover {
+    @apply bg-[#233F59];
+  }
+}
+
+@layer components {
+  /* Institutional Glass Panel */
+  .glass-panel {
+    @apply bg-[#0A1424] border border-[#1A2F45] rounded-none;
+  }
+  
+  .btn-primary {
+    @apply bg-[#06b6d4] hover:bg-[#5ce1e6] text-[#050B14] px-6 py-3 font-mono text-sm tracking-wider uppercase transition-colors rounded-none font-bold;
+  }
+  
+  .btn-secondary {
+    @apply bg-[#111214] hover:bg-[#161719] text-[#ECEDEE] border border-[#1C1D20] px-6 py-3 font-mono text-sm tracking-wider uppercase transition-colors rounded-none;
+  }
+
+  .heading-mono {
+    @apply font-mono uppercase tracking-widest text-[#ECEDEE];
+  }
+
+  .text-muted {
+    @apply text-[#A1A1AA];
+  }
+}
+
