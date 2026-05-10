@@ -1,0 +1,137 @@
+# Dependencies
+/node_modules
+/backend/node_modules
+/frontend/node_modules
+/protocol/node_modules
+
+# Build artifacts
+/frontend/dist
+/protocol/artifacts
+/protocol/cache
+/protocol/flattened
+/protocol/fhevmTemp
+/protocol/types
+
+# Logs
+/backend/logs
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+
+# Environment variables
+.env
+.env.local
+.env.development.local
+.env.test.local
+.env.production.local
+
+# IDE and OS files
+.vscode/
+.idea/
+*.suo
+*.ntvs*
+*.njsproj
+*.sln
+*.sw?
+*~
+.DS_Store
+Thumbs.db
+
+hardhat/types
+hardhat/fhevmTemp
+hardhat/.openzeppelin
+.openzeppelin/
+fhevmTemp
+
+# Solidity coverage
+coverage.json
+
+# Backend specific
+backend/dist/
+backend/build/
+backend/logs/
+
+# Uploads directory (user-uploaded files)
+uploads/
+
+# Frontend specific
+frontend/dist/
+frontend/build/
+frontend/.vite/
+
+# Database
+*.db
+*.sqlite
+*.sqlite3
+
+# Logs
+logs
+*.log
+
+# OS generated files
+.DS_Store
+.DS_Store?
+._*
+.Spotlight-V100
+.Trashes
+ehthumbs.db
+Thumbs.db
+
+# IDE files
+.vscode/
+.idea/
+.claude/
+*.swp
+*.swo
+*~
+
+# Private server setup documentation
+SERVER_SETUP.md
+
+# Temporary files
+*.tmp
+*.temp
+nul
+
+# Backup and old files
+*.bak
+*.backup
+*.old
+*_PART*
+*_REFACTORED*
+*_OLD*
+*.dbg.json
+
+# Contract artifacts
+artifacts/
+cache/
+typechain/
+typechain-types/
+
+# Deployment files
+deployments/localhost/
+deployments/hardhat/
+
+# Test files
+test-results/
+playwright-report/
+playwright/.cache/# Migration scripts (one-time use)
+backend/src/scripts/migrateDatabaseName.js
+
+# External scripts (server management, data migration)
+external_scripts/
+
+# Documents folder
+documents/
+
+# Analysis and documentation files (not for version control)
+FHEVM_COMPARISON_ANALYSIS.md
+INCREMENT_WITH_RELAYER.md
+
+# Test pages
+frontend/src/pages/IncrementTest.jsx
+
+# Deployment files
+hardhat/deploy/deploy.ts
+hardhat/deployed-contracts-mock.json
+hardhat/deployed-contracts-test.json
