@@ -3,6 +3,7 @@ import { useParams, useNavigate } from 'react-router-dom';
 import PredictionCard from '../modules/home/PredictionCard';
 import LoadingSpinner from '../modules/common/LoadingSpinner';
 import { predictionAPI, topicAPI } from '../integrations/api';
+import { getPredictionRouteId } from '../utils/getPredictionRouteId';
 
 const Category = () => {
   const { categoryId } = useParams();
@@ -246,7 +247,12 @@ const Category = () => {
               <BetCard
                 key={prediction.id}
                 bet={prediction}
-                onClick={() => navigate(`/prediction/${prediction.id}`)}
+                onClick={() => {
+                  const predictionId = getPredictionRouteId(prediction);
+                  if (predictionId) {
+                    navigate(`/prediction/${predictionId}`);
+                  }
+                }}
               />
             ))}
           </div>

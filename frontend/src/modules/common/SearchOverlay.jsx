@@ -3,6 +3,7 @@ import { Search, X } from 'lucide-react';
 import { useNavigate } from 'react-router-dom';
 import { motion, AnimatePresence } from 'framer-motion';
 import { usePredictions } from '../../core/usePredictions';
+import { getPredictionRouteId } from '../../utils/getPredictionRouteId';
 
 const SearchOverlay = ({ isOpen, onClose, searchQuery, setSearchQuery, searchInputRef, onSearch }) => {
   const [searchResults, setSearchResults] = useState([]);
@@ -18,7 +19,10 @@ const SearchOverlay = ({ isOpen, onClose, searchQuery, setSearchQuery, searchInp
     }
   }, [searchQuery, onSearch]);
 
-  const handlePredictionClick = (predictionId) => {
+  const handlePredictionClick = (prediction) => {
+    const predictionId = getPredictionRouteId(prediction);
+    if (!predictionId) return;
+
     navigate(`/prediction/${predictionId}`);
     onClose();
   };

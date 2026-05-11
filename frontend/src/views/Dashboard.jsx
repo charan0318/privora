@@ -4,6 +4,7 @@ import { toast } from 'react-hot-toast';
 import { useWallet } from '../core/useWallet';
 import { AlertCircle, TrendingUp, Clock, Award, XCircle, ArrowRight } from 'lucide-react';
 import LoadingSpinner from '../modules/common/LoadingSpinner';
+import { getPredictionRouteId } from '../utils/getPredictionRouteId';
 
 const Dashboard = () => {
   const { account, isConnected, getPredictionHubContract, signer } = useWallet();
@@ -122,7 +123,12 @@ const Dashboard = () => {
       <div
         key={prediction.id}
         className="glass-panel p-6 hover:border-[#3B82F6] transition-colors cursor-pointer group"
-        onClick={() => navigate(`/prediction/${prediction.id}`)}
+        onClick={() => {
+          const predictionId = getPredictionRouteId(prediction);
+          if (predictionId) {
+            navigate(`/prediction/${predictionId}`);
+          }
+        }}
       >
         <div className="flex justify-between items-start mb-3">
           <div className="flex-1">

@@ -5,6 +5,7 @@ import PredictionCard from '../modules/home/PredictionCard';
 import LoadingSpinner from '../modules/common/LoadingSpinner';
 import { userAPI, predictionAPI } from '../integrations/api';
 import { formatDistanceToNow } from 'date-fns';
+import { getPredictionRouteId } from '../utils/getPredictionRouteId';
 
 const Profile = () => {
   const { isConnected, address, disconnect } = useWallet();
@@ -465,7 +466,12 @@ const Profile = () => {
                       key={index}
                       prediction={prediction}
                       showUserPrediction={true}
-                      onClick={() => window.location.href = `/prediction/${prediction.id}`}
+                      onClick={() => {
+                        const predictionId = getPredictionRouteId(prediction);
+                        if (predictionId) {
+                          window.location.href = `/prediction/${predictionId}`;
+                        }
+                      }}
                     />
                   ))}
                 </div>

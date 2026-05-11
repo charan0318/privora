@@ -2,6 +2,7 @@ import { useState, useEffect } from 'react';
 import { Link } from 'react-router-dom';
 import PredictionSuccessModal from '../PredictionSuccessModal';
 import statisticsService from '../../integrations/statisticsService';
+import predictionSyncAPI from '../../integrations/predictionSyncAPI';
 import {
     Clock,
     Users,
@@ -510,13 +511,22 @@ const PredictionDetail = ({ predictionId }) => {
                 return;
             }
 
+            const allPredictionsResponse = await predictionSyncAPI.getAllPredictions({ limit: 1000 });
+            const allPredictions = allPredictionsResponse.data || [];
+            const matchedPrediction = allPredictions.find((prediction) => {
+                return String(prediction.contractId) === String(predictionId)
+                    || String(prediction.id) === String(predictionId)
+                    || String(prediction._id) === String(predictionId);
+            });
+            const resolvedPredictionId = matchedPrediction?.contractId || predictionId;
+
             // Use read-only contract (no signer needed for viewing)
             const contract = getPredictionHubContract(true);
-            const contractPrediction = await contract.getPrediction(predictionId);
+            const contractPrediction = await contract.getSignal(resolvedPredictionId);
             console.log('Raw contract prediction:', contractPrediction);
 
             // Get all options at once using getPredictionOptions
-            const optionsData = await contract.getPredictionOptions(predictionId);
+            const optionsData = await contract.getSignalOptions(resolvedPredictionId);
             console.log('Fetched options:', optionsData);
 
             const options = [];
@@ -541,13 +551,13 @@ const PredictionDetail = ({ predictionId }) => {
                 contractId: contractPrediction.id.toString(),
                 title: contractPrediction.title,
                 description: contractPrediction.description,
-                predictionType: Number(contractPrediction.predictionType),
+                predictionType: Number(contractPrediction.signalType),
                 endTime: contractPrediction.endTime.toString(),
                 createdAt: contractPrediction.createdAt.toString(),
                 isActive: contractPrediction.isActive,
                 isResolved: contractPrediction.isResolved,
-                minPositionAmount: contractPrediction.minPositionAmount.toString(),
-                maxPositionAmount: contractPrediction.maxPositionAmount.toString(),
+                minPositionAmount: contractPrediction.minAllocationAmount.toString(),
+                maxPositionAmount: contractPrediction.maxAllocationAmount.toString(),
                 optionCount: contractPrediction.optionCount.toString(),
                 liquidityParam: Number(contractPrediction.liquidityParam),
                 options: options,
@@ -557,10 +567,43 @@ const PredictionDetail = ({ predictionId }) => {
             console.log('Transformed prediction:', transformedPrediction);
             setPrediction(transformedPrediction);
 
-            await loadPredictionStatistics(contract, predictionId, Number(contractPrediction.optionCount), Number(contractPrediction.predictionType));
+            await loadPredictionStatistics(contract, resolvedPredictionId, Number(contractPrediction.optionCount), Number(contractPrediction.signalType));
 
         } catch (error) {
             console.error('Contract call failed:', error);
+            try {
+                const allPredictionsResponse = await predictionSyncAPI.getAllPredictions({ limit: 1000 });
+                const allPredictions = allPredictionsResponse?.data || allPredictionsResponse?.data?.data || [];
+                const fallbackPrediction = allPredictions.find((prediction) => {
+                    return String(prediction.contractId) === String(predictionId)
+                        || String(prediction.id) === String(predictionId)
+                        || String(prediction._id) === String(predictionId);
+                });
+
+                if (fallbackPrediction) {
+                    setPrediction({
+                        id: String(fallbackPrediction.contractId || fallbackPrediction.id || fallbackPrediction._id),
+                        contractId: String(fallbackPrediction.contractId || fallbackPrediction.id || fallbackPrediction._id),
+                        title: fallbackPrediction.title,
+                        description: fallbackPrediction.description,
+                        predictionType: Number(fallbackPrediction.predictionType || fallbackPrediction.betType || 0),
+                        endTime: fallbackPrediction.endTime,
+                        createdAt: fallbackPrediction.createdAt,
+                        isActive: fallbackPrediction.isActive,
+                        isResolved: fallbackPrediction.isResolved,
+                        minPositionAmount: String(fallbackPrediction.minPositionAmount || 0),
+                        maxPositionAmount: String(fallbackPrediction.maxPositionAmount || 0),
+                        optionCount: String(fallbackPrediction.options?.length || 0),
+                        liquidityParam: Number(fallbackPrediction.liquidityParam || 100),
+                        options: fallbackPrediction.options || [],
+                        useFHEVM: !!fallbackPrediction.useFHEVM
+                    });
+                    return;
+                }
+            } catch (fallbackError) {
+                console.error('Fallback prediction lookup failed:', fallbackError);
+            }
+
             setPrediction(null);
         } finally {
             setLoading(false);

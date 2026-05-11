@@ -2,6 +2,7 @@ import React, { useState, useEffect } from 'react';
 import { useWallet } from '../../core/useWallet';
 import { getNetworkConfig, getContracts } from '../../config/contracts';
 import { contractService } from '../../integrations/contractService';
+import { getPredictionRouteId } from '../../utils/getPredictionRouteId';
 
 const ContractDashboard = () => {
     const { account, chainId, provider } = useWallet();
@@ -209,12 +210,16 @@ const ContractDashboard = () => {
                                         </span>
                                     </td>
                                     <td className="px-4 py-3">
-                                        <a
-                                            href={`/prediction/${prediction.id}`}
-                                            className="text-purple-400 hover:text-purple-300 text-sm font-medium"
-                                        >
-                                            View
-                                        </a>
+                                        {getPredictionRouteId(prediction) ? (
+                                            <a
+                                                href={`/prediction/${getPredictionRouteId(prediction)}`}
+                                                className="text-purple-400 hover:text-purple-300 text-sm font-medium"
+                                            >
+                                                View
+                                            </a>
+                                        ) : (
+                                            <span className="text-gray-500 text-sm">Unavailable</span>
+                                        )}
                                     </td>
                                 </tr>
                             ))}

@@ -19,7 +19,13 @@ export const useTopics = () => {
 
       // Fetch from new topicAPI
       const response = await topicAPI.getTopics();
-      const fetchedTopics = response.data || [];
+      const fetchedTopics = Array.isArray(response)
+        ? response
+        : Array.isArray(response?.data)
+          ? response.data
+          : Array.isArray(response?.data?.data)
+            ? response.data.data
+            : [];
 
       // Transform to match expected format with 'id' field
       const transformed = fetchedTopics.map(topic => ({
