@@ -45,8 +45,8 @@ export const useContractPredictions = (chainId) => {
                     provider
                 ) : null;
 
-                // Get total number of predictions
-                const totalPredictions = Number(await hubContract.getTotalPredictions());
+                // Get total number of predictions (signals in the contract)
+                const totalPredictions = Number(await hubContract.getTotalSignals());
                 console.log(`📊 Total predictions in contract: ${totalPredictions}`);
 
                 if (!mounted) return;
@@ -86,11 +86,11 @@ export const useContractPredictions = (chainId) => {
 
         const fetchSinglePrediction = async (hubContract, ledgerContract, predictionId) => {
             try {
-                // Get prediction basic info
-                const predictionData = await hubContract.getPrediction(predictionId);
-                const optionsData = await hubContract.getPredictionOptions(predictionId);
+                // Get prediction basic info (signals in the contract)
+                const predictionData = await hubContract.getSignal(predictionId);
+                const optionsData = await hubContract.getSignalOptions(predictionId);
 
-                const predictionType = Number(predictionData.predictionType);
+                const predictionType = Number(predictionData.signalType);
                 const optionCount = optionsData.length;
                 const liquidityParam = Number(predictionData.liquidityParam || 100);
 

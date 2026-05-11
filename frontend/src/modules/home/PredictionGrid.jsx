@@ -16,7 +16,8 @@ const PredictionGrid = ({ filter = 'all', topicId = null, searchQuery = '' }) =>
   const [sortBy, setSortBy] = useState('newest');
   const { chainId } = useWallet();
 
-  const effectiveChainId = chainId || 31337;
+  // Default to Sepolia (11155111) when no wallet connected, since contracts are deployed there
+  const effectiveChainId = chainId || 11155111;
   const { predictions: contractPredictions, loading: isLoading, error } = useContractPredictions(effectiveChainId);
 
   useEffect(() => {
@@ -32,15 +33,37 @@ const PredictionGrid = ({ filter = 'all', topicId = null, searchQuery = '' }) =>
   }, []);
 
   const mergedPredictions = useMemo(() => {
-    return contractPredictions.map(contractPrediction => {
-      const dbPrediction = dbPredictions.find(db => db.contractId === contractPrediction.contractId);
-      return {
-        ...contractPrediction,
-        imageUrl: dbPrediction?.imageUrl || contractPrediction.imageUrl,
-        topicId: dbPrediction?.topicId || contractPrediction.topicId,
-        topic: dbPrediction?.topic || contractPrediction.topic,
-      };
-    });
+    // If we have contract predictions, merge with DB data
+    if (contractPredictions.length > 0) {
+      return contractPredictions.map(contractPrediction => {
+        const dbPrediction = dbPredictions.find(db => db.contractId === contractPrediction.contractId);
+        return {
+          ...contractPrediction,
+          imageUrl: dbPrediction?.imageUrl || contractPrediction.imageUrl,
+          topicId: dbPrediction?.topicId || contractPrediction.topicId,
+          topic: dbPrediction?.topic || contractPrediction.topic,
+        };
+      });
+    }
+    
+    // Fallback: Use DB predictions when no contract predictions exist
+    // This allows the app to work even when blockchain has no signals yet
+    return dbPredictions.map(dbPrediction => ({
+      id: dbPrediction._id || dbPrediction.id,
+      contractId: dbPrediction.contractId,
+      title: dbPrediction.title,
+      description: dbPrediction.description,
+      endTime: dbPrediction.endTime,
+      isActive: dbPrediction.isActive,
+      isResolved: dbPrediction.isResolved,
+      predictionType: dbPrediction.predictionType || dbPrediction.betType || 0,
+      options: dbPrediction.options || [],
+      volume: dbPrediction.volume || 0,
+      imageUrl: dbPrediction.imageUrl,
+      topicId: dbPrediction.topicId,
+      topic: dbPrediction.topic,
+      liquidityParam: dbPrediction.liquidityParam || 100,
+    }));
   }, [contractPredictions, dbPredictions]);
 
   useEffect(() => {

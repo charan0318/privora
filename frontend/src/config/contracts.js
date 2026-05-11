@@ -53,28 +53,33 @@ export const NETWORK_CONFIG = NETWORK_CONFIGS.sepolia;
 // FHEVM Configuration - Dynamic per network
 export const getFHEVMConfig = (chainId) => {
     const networkConfig = getNetworkConfig(chainId);
+    const relayerUrl = import.meta.env.VITE_RELAYER_URL || "";
 
     if (networkConfig.chainId === 31337) {
         // Local Hardhat FHEVM config - remote services, local contract addresses
+        // NOTE: Zama has deprecated the old relayer.testnet.zama.cloud endpoint
+        // The new Zama Protocol SDK requires an API key
         return {
-            gatewayUrl: "https://gateway.sepolia.zama.ai/", // Remote gateway for encryption
-            relayerUrl: "https://relayer.testnet.zama.cloud", // Remote relayer
+            gatewayUrl: relayerUrl ? "https://gateway.sepolia.zama.ai/" : "", // Remote gateway for encryption
+            relayerUrl: relayerUrl || "", // Empty if no API key configured
             aclAddress: "0x50157cffd6bbfa2dece204a89ec419c23ef5755d", // Local Hardhat ACL
             acoAddress: "0x1364cbbf2cdf5032c47d8226a6f6fbd2afcdacac", // Local Hardhat KMS
             inputVerifierAddress: "0x901f8942346f7ab3a01f6d7613119bca447bb030", // Local Hardhat Coprocessor
             decryptionVerifierAddress: "0x36772142b74871f255cbd7a3e89b401d3e45825f", // Local Hardhat Decryption Verifier
-            chainId: networkConfig.chainId
+            chainId: networkConfig.chainId,
+            isAvailable: !!relayerUrl
         };
     } else {
         // Sepolia FHEVM config
         return {
-            gatewayUrl: import.meta.env.VITE_GATEWAY_URL || "https://gateway.sepolia.zama.ai/",
-            relayerUrl: import.meta.env.VITE_RELAYER_URL || "https://relayer.testnet.zama.cloud",
+            gatewayUrl: relayerUrl ? (import.meta.env.VITE_GATEWAY_URL || "https://gateway.sepolia.zama.ai/") : "",
+            relayerUrl: relayerUrl || "",
             aclAddress: import.meta.env.VITE_ACL_ADDRESS || "0x687820221192C5B662b25367F70076A37bc79b6c",
             acoAddress: import.meta.env.VITE_KMS_ADDRESS || "0x1364cBBf2cDF5032C47d8226a6f6FBD2AFCDacAC",
             inputVerifierAddress: import.meta.env.VITE_INPUT_VERIFIER_ADDRESS || "0xbc91f3daD1A5F19F8390c400196e58073B6a0BC4",
             decryptionVerifierAddress: import.meta.env.VITE_DECRYPTION_VERIFIER_ADDRESS || "0x36772142b74871f255cbd7a3e89b401d3e45825f",
-            chainId: networkConfig.chainId
+            chainId: networkConfig.chainId,
+            isAvailable: !!relayerUrl
         };
     }
 };

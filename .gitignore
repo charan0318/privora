@@ -135,3 +135,4 @@ frontend/src/pages/IncrementTest.jsx
 hardhat/deploy/deploy.ts
 hardhat/deployed-contracts-mock.json
 hardhat/deployed-contracts-test.json
+.vercel
